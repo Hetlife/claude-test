@@ -20,6 +20,16 @@ phone-to-phone sync over the local network.
 
 Architecture and trade-offs are documented in `BUILD_PLAN.md`.
 
+## Web version (Chrome, right now, no install)
+
+There's also a browser-only build of the same app (`docs/index.html`) —
+same design, same 50/50 balance math, same JSON export/import schema —
+for using it from Chrome/Safari today while the native app isn't installed
+yet. It stores data **locally in each phone's browser only** (no shared
+backend), matching the native app's local-first philosophy. See
+`WEB_APP.md` for what it is, its one real limitation (no live sync between
+two browsers), and how to host it yourself.
+
 ## ⚠️ Important: this was built without Xcode or a Mac
 
 This project was generated in a Linux container with **no macOS, no Xcode,
@@ -53,6 +63,13 @@ BUILD_AND_INSTALL.md          Step-by-step: build in Xcode, install on two
 SYNC_SETUP.md                 How local-network device sync works and how
                                to pair two phones
 TEST_REPORT.md                What was tested, how, and what's unverified
+docs/
+  index.html                   Browser version of the app (self-contained,
+                                localStorage-based), ready for GitHub Pages
+  expenses_seed.json           Copy of the sample data for the web version's
+                                "Load Sample Data" button
+WEB_APP.md                     What the web version is, its limitations,
+                                and how to host it yourself
 ```
 
 ## Quick start
