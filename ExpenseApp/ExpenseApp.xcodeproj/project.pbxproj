@@ -65,6 +65,16 @@
 			isa = PBXBuildFile;
 			fileRef = 074E7AA956885BB0C7556647;
 		};
+		97B19E8BC600EEA365BDD865 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = Budget.swift;
+			sourceTree = "<group>";
+		};
+		9172BDA2B00EA4510C1AC4DE = {
+			isa = PBXBuildFile;
+			fileRef = 97B19E8BC600EEA365BDD865;
+		};
 		E262A37415230532A7E9EBE3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -95,6 +105,16 @@
 			isa = PBXBuildFile;
 			fileRef = C9C0B4ECCA3212C6EA67D6D5;
 		};
+		1AC8AE449C028808605B13BE = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BudgetStore.swift;
+			sourceTree = "<group>";
+		};
+		7C46BB80B5E3C6AB8F735770 = {
+			isa = PBXBuildFile;
+			fileRef = 1AC8AE449C028808605B13BE;
+		};
 		2C227DF5FF07BF4C4B127142 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -114,6 +134,16 @@
 		2F7602CEBC41CD94F655AFA0 = {
 			isa = PBXBuildFile;
 			fileRef = 64E49DD8E3569E12E8D89509;
+		};
+		0C7AB5E735706A7AA0090651 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BudgetCalculator.swift;
+			sourceTree = "<group>";
+		};
+		F6E8A9C971F4D77C4AE8650A = {
+			isa = PBXBuildFile;
+			fileRef = 0C7AB5E735706A7AA0090651;
 		};
 		646173E29443D533BC5EE3FD = {
 			isa = PBXFileReference;
@@ -285,6 +315,16 @@
 			isa = PBXBuildFile;
 			fileRef = F54DEB24B5C44E1331AA074E;
 		};
+		F5F42B95502935FBF6EC0B4E = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BudgetEditorView.swift;
+			sourceTree = "<group>";
+		};
+		4CA0BAA4636BA09C03CA3569 = {
+			isa = PBXBuildFile;
+			fileRef = F5F42B95502935FBF6EC0B4E;
+		};
 		A7ECD772CAB2C3DD0A27183E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.swift;
@@ -324,6 +364,16 @@
 		8A57E6DB407C20E448FD6945 = {
 			isa = PBXBuildFile;
 			fileRef = 6F30EC6256ACE1C5D7693C25;
+		};
+		ED71566B50AC6ACDEA40B571 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BudgetCardView.swift;
+			sourceTree = "<group>";
+		};
+		D1BA0E4CA7286F9670F02AC4 = {
+			isa = PBXBuildFile;
+			fileRef = ED71566B50AC6ACDEA40B571;
 		};
 		95F2B01959B4740112171EF8 = {
 			isa = PBXFileReference;
@@ -411,6 +461,26 @@
 			isa = PBXBuildFile;
 			fileRef = E74AABC4E675731EF9D3A0CD;
 		};
+		89701C748215DDFF1C18BCC8 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BudgetCalculatorTests.swift;
+			sourceTree = "<group>";
+		};
+		37977E45DBE2C83F61C73666 = {
+			isa = PBXBuildFile;
+			fileRef = 89701C748215DDFF1C18BCC8;
+		};
+		32C72FF51775D45090D74A16 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = BudgetTests.swift;
+			sourceTree = "<group>";
+		};
+		3D13E4187D2D55358BD895A6 = {
+			isa = PBXBuildFile;
+			fileRef = 32C72FF51775D45090D74A16;
+		};
 		33135DA5B8E26E589427ECF3 = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
@@ -432,6 +502,7 @@
 				2D72B7018956522A962AEF63,
 				0F7580BAD0C3DB67970CE038,
 				6F30EC6256ACE1C5D7693C25,
+				ED71566B50AC6ACDEA40B571,
 			);
 			sourceTree = "<group>";
 			path = Components;
@@ -448,6 +519,7 @@
 				11F0C31DDDA17DE15B482328,
 				283327E432950B3616DE2D72,
 				F54DEB24B5C44E1331AA074E,
+				F5F42B95502935FBF6EC0B4E,
 				EBFAE25BF28904A075A5F92C,
 			);
 			sourceTree = "<group>";
@@ -461,6 +533,7 @@
 				F9D01FDBE56B52604A17EF5F,
 				CF42D745F4E97B315D78D6F2,
 				074E7AA956885BB0C7556647,
+				97B19E8BC600EEA365BDD865,
 			);
 			sourceTree = "<group>";
 			path = Models;
@@ -471,6 +544,7 @@
 				E262A37415230532A7E9EBE3,
 				EA8C955A4C4E77839298C86D,
 				C9C0B4ECCA3212C6EA67D6D5,
+				1AC8AE449C028808605B13BE,
 			);
 			sourceTree = "<group>";
 			path = Persistence;
@@ -480,6 +554,7 @@
 			children = (
 				2C227DF5FF07BF4C4B127142,
 				64E49DD8E3569E12E8D89509,
+				0C7AB5E735706A7AA0090651,
 			);
 			sourceTree = "<group>";
 			path = Services;
@@ -532,6 +607,8 @@
 				679DACC0FB482F420601C102,
 				121CB8D635D24AF711A8B6E3,
 				E74AABC4E675731EF9D3A0CD,
+				89701C748215DDFF1C18BCC8,
+				32C72FF51775D45090D74A16,
 			);
 			sourceTree = "<group>";
 			path = ExpenseAppTests;
@@ -564,11 +641,14 @@
 				F57F4487DBCB9175C706C9E3,
 				6386036C1DDC4DB12270D0E0,
 				656BA64C1849F026C79F2C2F,
+				9172BDA2B00EA4510C1AC4DE,
 				57031371F5610264625E2F44,
 				96F0A62C1D5A6EFD85AAA74F,
 				64A59DAEEC67A06A7F16BA7E,
+				7C46BB80B5E3C6AB8F735770,
 				16464B0FBB7E03DE7901D572,
 				2F7602CEBC41CD94F655AFA0,
+				F6E8A9C971F4D77C4AE8650A,
 				BAC3D2EAB1BC7555103857D3,
 				CA9E997463AAB6BB4950C32C,
 				A9C7B1192DD03E3B1D3AF442,
@@ -586,10 +666,12 @@
 				0CAAEEA717F826EB8DCB8526,
 				DF12DE2D83B25AEC56B37AB5,
 				594AE876EC9E0C80110A2154,
+				4CA0BAA4636BA09C03CA3569,
 				34FDE25F03645FD7594C143C,
 				B72E416FC2DE98C19E1C1B48,
 				B7AD5927F3C46316B643FE6F,
 				8A57E6DB407C20E448FD6945,
+				D1BA0E4CA7286F9670F02AC4,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,6 +701,8 @@
 				741676CCCF052A85E1C7094E,
 				0D030820E605F200E1E90B36,
 				37F7A32BE525A64EED3D2CBF,
+				37977E45DBE2C83F61C73666,
+				3D13E4187D2D55358BD895A6,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

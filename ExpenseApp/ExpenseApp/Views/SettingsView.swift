@@ -3,12 +3,14 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @EnvironmentObject private var store: ExpenseStore
+    @EnvironmentObject private var budgetStore: BudgetStore
     @AppStorage(AppStorageKeys.currentUser) private var currentUserRaw: String = Payer.het.rawValue
     @AppStorage(AppStorageKeys.deviceName) private var deviceName: String = ""
 
     @State private var exportDocument: ExpenseBackupDocument?
     @State private var isPresentingExporter = false
     @State private var isPresentingImporter = false
+    @State private var isPresentingBudgetEditor = false
 
     @State private var importResultMessage: String?
     @State private var showImportResult = false
@@ -31,6 +33,19 @@ struct SettingsView: View {
                     text: $deviceName,
                     prompt: Text(DeviceIdentity.defaultDeviceName(for: currentUser))
                 )
+            }
+
+            Section("Budget") {
+                Button {
+                    isPresentingBudgetEditor = true
+                } label: {
+                    if let budget = budgetStore.budget {
+                        Text("\(budget.name.isEmpty ? "Budget" : budget.name): \(CurrencyFormatter.string(fromPaise: budget.amountPaise))")
+                    } else {
+                        Text("Set a Budget")
+                    }
+                }
+                .foregroundStyle(.primary)
             }
 
             Section("Sync") {
@@ -87,6 +102,9 @@ struct SettingsView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(importErrorMessage ?? "That file couldn't be imported. Your existing expenses are unchanged.")
+        }
+        .sheet(isPresented: $isPresentingBudgetEditor) {
+            BudgetEditorView(existingBudget: budgetStore.budget)
         }
     }
 

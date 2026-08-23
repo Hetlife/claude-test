@@ -14,6 +14,8 @@ phone-to-phone sync over the local network.
   than their fair share owes the other the difference.
 - A complete local transaction history with search, filters, and date
   grouping.
+- An optional budget — an amount over a date range you set — with the
+  remaining balance shown right on the Home screen when the app opens.
 - Direct, manual, foreground device-to-device sync over Wi-Fi using Apple's
   MultipeerConnectivity — no server, ever.
 - JSON export/import as a manual backup mechanism.
@@ -65,9 +67,8 @@ SYNC_SETUP.md                 How local-network device sync works and how
 TEST_REPORT.md                What was tested, how, and what's unverified
 docs/
   index.html                   Browser version of the app (self-contained,
-                                localStorage-based), ready for GitHub Pages
-  expenses_seed.json           Copy of the sample data for the web version's
-                                "Load Sample Data" button
+                                localStorage-based, sample data embedded
+                                inline), ready for GitHub Pages
 WEB_APP.md                     What the web version is, its limitations,
                                 and how to host it yourself
 ```

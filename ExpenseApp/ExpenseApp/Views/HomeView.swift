@@ -11,8 +11,10 @@ enum HomePeriod: String, CaseIterable, Identifiable, Hashable {
 /// paid more, and what happened recently.
 struct HomeView: View {
     @EnvironmentObject private var store: ExpenseStore
+    @EnvironmentObject private var budgetStore: BudgetStore
     @Binding var isPresentingAddExpense: Bool
     @State private var period: HomePeriod = .thisMonth
+    @State private var isPresentingBudgetEditor = false
 
     private var periodExpenses: [ExpenseRecord] {
         switch period {
@@ -61,6 +63,13 @@ struct HomeView: View {
                     .foregroundStyle(.secondary)
                     .padding(.top, 2)
                 }
+
+                BudgetCardView(
+                    budget: budgetStore.budget,
+                    progress: budgetStore.budget.map { BudgetCalculator.progress(for: $0, records: store.activeExpenses) },
+                    onTap: { isPresentingBudgetEditor = true }
+                )
+                .padding(.horizontal)
 
                 BalanceCardView(summary: summary)
                     .padding(.horizontal)
@@ -134,6 +143,9 @@ struct HomeView: View {
                 }
                 .accessibilityLabel("Add Expense")
             }
+        }
+        .sheet(isPresented: $isPresentingBudgetEditor) {
+            BudgetEditorView(existingBudget: budgetStore.budget)
         }
     }
 }

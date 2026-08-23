@@ -55,11 +55,14 @@ ExpenseApp/
     Persistence/
       PersistenceController.swift   ModelContainer setup (app + in-memory test)
       ExpenseRepository.swift       CRUD + tombstone delete, protocol-based
+      BudgetStore.swift             single active Budget, JSON in UserDefaults
     Services/
       BalanceCalculator.swift       pure 50/50 balance engine (no SwiftUI, no
                                      SwiftData — operates on [ExpenseRecord])
       ExportImportService.swift     JSON export/import, schema validation,
                                      reuses SyncEngine.merge for safe import
+      BudgetCalculator.swift        pure spent/remaining math for a Budget
+                                     over its date range (no SwiftUI/SwiftData)
     Sync/
       SyncMessage.swift          versioned Codable wire protocol
       SyncEngine.swift           pure merge function (UUID + updatedAt LWW)
@@ -67,7 +70,8 @@ ExpenseApp/
     Views/
       RootTabView.swift, HomeView.swift, TransactionsView.swift,
       AddExpenseView.swift, ExpenseDetailView.swift, BalanceView.swift,
-      SettingsView.swift, SyncView.swift, OnboardingView.swift
+      SettingsView.swift, SyncView.swift, OnboardingView.swift,
+      BudgetEditorView.swift
       Components/                small reusable view pieces
     Utilities/
       CurrencyFormatter.swift, Haptics.swift, DeviceIdentity.swift

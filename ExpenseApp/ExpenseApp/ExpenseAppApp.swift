@@ -6,6 +6,7 @@ struct ExpenseAppApp: App {
     private let modelContainer: ModelContainer
     @StateObject private var store: ExpenseStore
     @StateObject private var syncManager: PeerSyncManager
+    @StateObject private var budgetStore = BudgetStore()
 
     init() {
         let container = PersistenceController.makeAppContainer()
@@ -27,6 +28,7 @@ struct ExpenseAppApp: App {
             RootTabView()
                 .environmentObject(store)
                 .environmentObject(syncManager)
+                .environmentObject(budgetStore)
                 .onChange(of: syncManager.syncStatus) { _, newValue in
                     if case .success = newValue {
                         store.refresh()

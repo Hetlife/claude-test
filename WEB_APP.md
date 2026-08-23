@@ -51,6 +51,16 @@ Do this every so often (e.g. after a trip, or every few days) and both of
 your copies stay reasonably close to in sync, the same way the export/
 import feature works on the native iOS app.
 
+## Budget
+
+**Settings → Set a Budget** (or the card right on the Home screen) lets
+you set an amount and a specific date range — e.g. "₹10,000, this month"
+or "₹5,000, June 1–15 for a trip." The Home screen shows how much of it
+is left (or how far over) every time you open the app, with a progress
+bar. There's one active budget at a time; editing it replaces the current
+one, and "Remove Budget" clears it. It counts every active expense whose
+date falls in that range, from both of you combined (not per-person).
+
 ## Loading your real Jaipur + SCS data
 
 **Settings → Load Sample Data (Jaipur + SCS)** in the web app loads the

@@ -66,7 +66,13 @@ substitute for an actual build.**
 
 ## Unit test coverage (written, logic-verified, not yet run by XCTest)
 
-`ExpenseAppTests/` — 7 files, ~50 test methods:
+`ExpenseAppTests/` — 9 files, ~60 test methods:
+
+- **`BudgetCalculatorTests.swift`** — spend inside/outside a budget's date
+  range, inclusive start/end boundaries, over-budget flagging, deleted
+  expenses excluded, empty ledger, and a single-day budget window.
+- **`BudgetTests.swift`** — validation: zero amount rejected, end date
+  before start date rejected, same-day start/end accepted.
 
 - **`BalanceCalculatorTests.swift`** — every scenario from the product
   spec: Het pays ₹1,000 → Sarthak owes ₹500; Sarthak pays ₹1,000 → Het
