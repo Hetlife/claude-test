@@ -26,25 +26,28 @@ struct AddExpenseView: View {
     @State private var description: String
     @State private var date: Date
     @State private var notes: String
+    @State private var authorizedBy: Payer
     @FocusState private var amountFieldFocused: Bool
     @State private var showValidationError = false
 
     init(mode: AddExpenseMode) {
         self.mode = mode
         let defaults = UserDefaults.standard
+        let currentUser = Payer(rawValue: defaults.string(forKey: AppStorageKeys.currentUser) ?? "") ?? .het
 
         switch mode {
         case .create:
-            let defaultPayer = Payer(rawValue: defaults.string(forKey: AppStorageKeys.currentUser) ?? "") ?? .het
-            let defaultMethod = PaymentMethod(rawValue: defaults.string(forKey: AppStorageKeys.lastPaymentMethod) ?? "") ?? .online
             let defaultCategory = ExpenseCategory(rawValue: defaults.string(forKey: AppStorageKeys.lastCategory) ?? "") ?? .food
-            _paidBy = State(initialValue: defaultPayer)
-            _paidVia = State(initialValue: defaultMethod)
+            // Defaults to Company / Cash, since that's the common case — both
+            // are still one tap away from Het/Sarthak/Online before saving.
+            _paidBy = State(initialValue: .company)
+            _paidVia = State(initialValue: .cash)
             _category = State(initialValue: defaultCategory)
             _description = State(initialValue: "")
             _date = State(initialValue: Date())
             _notes = State(initialValue: "")
             _amountText = State(initialValue: "")
+            _authorizedBy = State(initialValue: currentUser)
         case .edit(let record):
             _paidBy = State(initialValue: record.paidBy)
             _paidVia = State(initialValue: record.paidVia)
@@ -53,6 +56,7 @@ struct AddExpenseView: View {
             _date = State(initialValue: record.date)
             _notes = State(initialValue: record.notes ?? "")
             _amountText = State(initialValue: Self.decimalString(fromPaise: record.amountPaise))
+            _authorizedBy = State(initialValue: record.authorizedBy ?? currentUser)
         }
     }
 
@@ -101,6 +105,21 @@ struct AddExpenseView: View {
                         }
                         .pickerStyle(.segmented)
                         .labelsHidden()
+                    }
+
+                    if paidBy == .company {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("AUTHORIZED BY")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Picker("Authorized by", selection: $authorizedBy) {
+                                ForEach(Payer.people) { payer in
+                                    Text(payer.displayName).tag(payer)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+                        }
                     }
                 }
 
@@ -194,7 +213,8 @@ struct AddExpenseView: View {
                 merchantOrDescription: trimmedDescription,
                 notes: trimmedNotes.isEmpty ? nil : trimmedNotes,
                 date: date,
-                createdByDevice: deviceName
+                createdByDevice: deviceName,
+                authorizedBy: paidBy == .company ? authorizedBy : nil
             )
             success = store.add(record)
         case .edit(let original):
@@ -206,6 +226,7 @@ struct AddExpenseView: View {
             updated.merchantOrDescription = trimmedDescription
             updated.notes = trimmedNotes.isEmpty ? nil : trimmedNotes
             updated.date = date
+            updated.authorizedBy = paidBy == .company ? authorizedBy : nil
             success = store.update(updated)
         }
 

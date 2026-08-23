@@ -59,10 +59,12 @@ or wait for a future version with trip/project grouping.
   row defaults to **Cash**. Edit individual expenses in the app if you know
   better.
 - **Category**: inferred from the description text with simple keyword
-  matching (e.g. "taxi"/"cab" → Transport, "beer"/"whisky"/"bottle" →
-  Alcohol, "water"/"zepto" → Groceries, "police" → Other). This is a
-  best-effort guess, not authoritative — re-categorize anything that looks
-  wrong.
+  matching (e.g. "taxi"/"cab" → Transport, "beer"/"whisky"/"bottle"/"cig" →
+  **CSC**, "water"/"zepto" → Groceries, "police" → Other). CSC is the
+  app's deliberately discreet label covering what used to be separate
+  Alcohol/Tobacco categories — the name and icon don't spell out what was
+  bought. This categorization is a best-effort guess, not authoritative —
+  re-categorize anything that looks wrong.
 - **Dates**: the source data has no per-transaction dates, only a
   transaction order. Jaipur rows were spread 15 minutes apart starting
   2026-06-12; SCS rows the same starting 2026-07-20. These are placeholders

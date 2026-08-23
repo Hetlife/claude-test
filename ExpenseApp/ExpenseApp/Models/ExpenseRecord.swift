@@ -18,6 +18,10 @@ struct ExpenseRecord: Codable, Identifiable, Equatable, Hashable {
     var updatedAt: Date
     var createdByDevice: String
     var deletedAt: Date?
+    /// Who authorized this expense — only meaningful when `paidBy == .company`;
+    /// always `nil` for a personal (Het/Sarthak) expense. Should be `.het` or
+    /// `.sarthak`, never `.company` itself.
+    var authorizedBy: Payer?
 
     var isDeleted: Bool { deletedAt != nil }
 
@@ -34,7 +38,8 @@ struct ExpenseRecord: Codable, Identifiable, Equatable, Hashable {
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         createdByDevice: String,
-        deletedAt: Date? = nil
+        deletedAt: Date? = nil,
+        authorizedBy: Payer? = nil
     ) {
         self.id = id
         self.amountPaise = amountPaise
@@ -49,6 +54,7 @@ struct ExpenseRecord: Codable, Identifiable, Equatable, Hashable {
         self.updatedAt = updatedAt
         self.createdByDevice = createdByDevice
         self.deletedAt = deletedAt
+        self.authorizedBy = authorizedBy
     }
 }
 
@@ -59,6 +65,7 @@ enum ExpenseRecordValidationError: Error, LocalizedError, Equatable {
     case emptyDescription
     case invalidCurrency
     case invalidDate
+    case invalidAuthorizedBy
 
     var errorDescription: String? {
         switch self {
@@ -72,6 +79,8 @@ enum ExpenseRecordValidationError: Error, LocalizedError, Equatable {
             return "Currency must be INR."
         case .invalidDate:
             return "Expense has an invalid date."
+        case .invalidAuthorizedBy:
+            return "A company expense must be authorized by Het or Sarthak."
         }
     }
 }
@@ -92,6 +101,9 @@ extension ExpenseRecord {
         guard dates.allSatisfy({ $0.isFinite }) else { throw ExpenseRecordValidationError.invalidDate }
         if let deletedAt {
             guard deletedAt.timeIntervalSince1970.isFinite else { throw ExpenseRecordValidationError.invalidDate }
+        }
+        if let authorizedBy, authorizedBy == .company {
+            throw ExpenseRecordValidationError.invalidAuthorizedBy
         }
     }
 }

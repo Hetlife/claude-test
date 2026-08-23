@@ -22,6 +22,7 @@ final class Expense {
     var updatedAt: Date
     var createdByDevice: String
     var deletedAt: Date?
+    var authorizedByRaw: String?
 
     init(
         id: UUID,
@@ -36,7 +37,8 @@ final class Expense {
         createdAt: Date,
         updatedAt: Date,
         createdByDevice: String,
-        deletedAt: Date?
+        deletedAt: Date?,
+        authorizedBy: Payer? = nil
     ) {
         self.id = id
         self.amountPaise = amountPaise
@@ -51,6 +53,7 @@ final class Expense {
         self.updatedAt = updatedAt
         self.createdByDevice = createdByDevice
         self.deletedAt = deletedAt
+        self.authorizedByRaw = authorizedBy?.rawValue
     }
 
     var paidBy: Payer {
@@ -66,6 +69,11 @@ final class Expense {
     var category: ExpenseCategory {
         get { ExpenseCategory(rawValue: categoryRaw) ?? .other }
         set { categoryRaw = newValue.rawValue }
+    }
+
+    var authorizedBy: Payer? {
+        get { authorizedByRaw.flatMap { Payer(rawValue: $0) } }
+        set { authorizedByRaw = newValue?.rawValue }
     }
 
     var isDeleted: Bool { deletedAt != nil }
@@ -86,7 +94,8 @@ extension Expense {
             createdAt: record.createdAt,
             updatedAt: record.updatedAt,
             createdByDevice: record.createdByDevice,
-            deletedAt: record.deletedAt
+            deletedAt: record.deletedAt,
+            authorizedBy: record.authorizedBy
         )
     }
 
@@ -105,6 +114,7 @@ extension Expense {
         updatedAt = record.updatedAt
         createdByDevice = record.createdByDevice
         deletedAt = record.deletedAt
+        authorizedBy = record.authorizedBy
     }
 
     func toRecord() -> ExpenseRecord {
@@ -121,7 +131,8 @@ extension Expense {
             createdAt: createdAt,
             updatedAt: updatedAt,
             createdByDevice: createdByDevice,
-            deletedAt: deletedAt
+            deletedAt: deletedAt,
+            authorizedBy: authorizedBy
         )
     }
 }

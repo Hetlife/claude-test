@@ -259,6 +259,7 @@
       <button class="chip selected" data-filter-payer="" type="button">All</button>
       <button class="chip" data-filter-payer="Het" type="button">Het</button>
       <button class="chip" data-filter-payer="Sarthak" type="button">Sarthak</button>
+      <button class="chip" data-filter-payer="Company" type="button">Company</button>
       <button class="chip" data-filter-method="Cash" type="button">Cash</button>
       <button class="chip" data-filter-method="Online" type="button">Online</button>
     </div>
@@ -326,6 +327,15 @@
     <div class="field">
       <label class="fl">Paid By</label>
       <div class="segmented" id="paidByPicker">
+        <button data-value="Het" type="button">Het</button>
+        <button data-value="Sarthak" type="button">Sarthak</button>
+        <button data-value="Company" type="button">Company</button>
+      </div>
+    </div>
+
+    <div class="field" id="authorizedByField" style="display:none;">
+      <label class="fl">Authorized By</label>
+      <div class="segmented" id="authorizedByPicker">
         <button data-value="Het" type="button">Het</button>
         <button data-value="Sarthak" type="button">Sarthak</button>
       </div>
@@ -431,7 +441,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Tobacco",
+      "category": "CSC",
       "merchantOrDescription": "cig",
       "notes": "Jaipur trip",
       "date": "2026-06-12T09:15:00Z",
@@ -506,7 +516,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "whisky",
       "notes": "Jaipur trip (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-06-12T10:30:00Z",
@@ -521,7 +531,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "beer",
       "notes": "Jaipur trip (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-06-12T10:45:00Z",
@@ -656,7 +666,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "beer lounge",
       "notes": "Jaipur trip (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-06-12T13:00:00Z",
@@ -671,7 +681,7 @@
       "currency": "INR",
       "paidBy": "Het",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "airport beer",
       "notes": "Jaipur trip",
       "date": "2026-06-12T13:15:00Z",
@@ -911,7 +921,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Tobacco",
+      "category": "CSC",
       "merchantOrDescription": "cig",
       "notes": "Jaipur trip (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-06-12T17:15:00Z",
@@ -941,7 +951,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "jb bottle devanshi home",
       "notes": "Jaipur trip (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-06-12T17:45:00Z",
@@ -956,7 +966,7 @@
       "currency": "INR",
       "paidBy": "Het",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "liqot",
       "notes": "Jaipur trip",
       "date": "2026-06-12T18:00:00Z",
@@ -1091,7 +1101,7 @@
       "currency": "INR",
       "paidBy": "Het",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "bottle",
       "notes": "Jaipur trip",
       "date": "2026-06-12T20:15:00Z",
@@ -1331,7 +1341,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Alcohol",
+      "category": "CSC",
       "merchantOrDescription": "toki bottle",
       "notes": "SCS (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-07-20T10:00:00Z",
@@ -1346,7 +1356,7 @@
       "currency": "INR",
       "paidBy": "Sarthak",
       "paidVia": "Cash",
-      "category": "Tobacco",
+      "category": "CSC",
       "merchantOrDescription": "cig",
       "notes": "SCS (unattributed in source — provisionally assigned to Sarthak)",
       "date": "2026-07-20T10:15:00Z",
@@ -1477,9 +1487,13 @@
 
   var CATEGORIES = [
     ["Food","🍽"], ["Transport","🚗"], ["Hotel","🛏"], ["Shopping","🛍"],
-    ["Groceries","🧺"], ["Entertainment","🎬"], ["Alcohol","🍷"], ["Tobacco","🚬"],
+    ["Groceries","🧺"], ["Entertainment","🎬"], ["CSC","📦"],
     ["Tickets","🎫"], ["Business","💼"], ["Other","⋯"]
   ];
+  /** Old raw category values still present in earlier exports/backups —
+   *  mapped forward to CSC so they keep importing cleanly. The label and
+   *  icon are deliberately neutral (see CATEGORIES above). */
+  var LEGACY_CATEGORY_MAP = { "Alcohol": "CSC", "Tobacco": "CSC" };
   var CATEGORY_ICON = {};
   CATEGORIES.forEach(function (c) { CATEGORY_ICON[c[0]] = c[1]; });
 
@@ -1574,12 +1588,15 @@
   // Balance engine — mirrors the native app's BalanceCalculator exactly
   // ---------------------------------------------------------------------
   function computeBalance(records) {
-    var hetPaid = 0, sarthakPaid = 0;
+    var hetPaid = 0, sarthakPaid = 0, companyPaid = 0;
     records.forEach(function (r) {
       if (r.deletedAt) return;
       if (r.paidBy === "Het") hetPaid += r.amountPaise;
       else if (r.paidBy === "Sarthak") sarthakPaid += r.amountPaise;
+      else if (r.paidBy === "Company") companyPaid += r.amountPaise;
     });
+    // Company spend never enters the 50/50 split — total/fairShare below
+    // are Het+Sarthak only, same as the native app's BalanceCalculator.
     var total = hetPaid + sarthakPaid;
     var fairShare = Math.floor(total / 2);
     var hetDelta = hetPaid - fairShare;
@@ -1587,17 +1604,23 @@
     var owedBy = null, owedTo = null, owedAmount = 0;
     if (hetDelta > 0) { owedBy = "Sarthak"; owedTo = "Het"; owedAmount = hetDelta; }
     else if (sarthakDelta > 0) { owedBy = "Het"; owedTo = "Sarthak"; owedAmount = sarthakDelta; }
-    return { total: total, hetPaid: hetPaid, sarthakPaid: sarthakPaid, fairShare: fairShare, owedBy: owedBy, owedTo: owedTo, owedAmount: owedAmount };
+    return { total: total, hetPaid: hetPaid, sarthakPaid: sarthakPaid, companyPaid: companyPaid, fairShare: fairShare, owedBy: owedBy, owedTo: owedTo, owedAmount: owedAmount };
   }
 
   // ---------------------------------------------------------------------
   // Merge engine — mirrors the native app's SyncEngine.merge (UUID + updatedAt LWW)
   // ---------------------------------------------------------------------
+  function normalizeCategory(r) {
+    if (r && LEGACY_CATEGORY_MAP[r.category]) r.category = LEGACY_CATEGORY_MAP[r.category];
+    return r;
+  }
+
   function mergeRecords(local, remote) {
     var byId = {};
     local.forEach(function (r) { byId[r.id] = r; });
     var changed = 0, rejected = 0;
-    remote.forEach(function (incoming) {
+    remote.forEach(function (incomingRaw) {
+      var incoming = normalizeCategory(incomingRaw);
       if (!isValidRecord(incoming)) { rejected++; return; }
       var existing = byId[incoming.id];
       if (!existing) { byId[incoming.id] = incoming; changed++; }
@@ -1613,6 +1636,9 @@
     if (!r.merchantOrDescription || !String(r.merchantOrDescription).trim()) return false;
     if (r.currency && r.currency !== "INR") return false;
     if (!r.id || !r.paidBy || !r.paidVia || !r.category || !r.date || !r.updatedAt) return false;
+    // A company expense can't be "authorized by" the Company account itself.
+    // A missing authorizedBy is tolerated (older records predate the field).
+    if (r.authorizedBy === "Company") return false;
     return true;
   }
 
@@ -1700,8 +1726,9 @@
     }
     var b = computeBalance(periodList);
     document.getElementById("homeTotal").textContent = formatRupees(b.total);
-    document.getElementById("homePaidSplit").textContent =
-      "Het paid " + formatRupees(b.hetPaid) + "   ·   Sarthak paid " + formatRupees(b.sarthakPaid);
+    var paidSplit = "Het paid " + formatRupees(b.hetPaid) + "   ·   Sarthak paid " + formatRupees(b.sarthakPaid);
+    if (b.companyPaid > 0) paidSplit += "   ·   Company paid " + formatRupees(b.companyPaid);
+    document.getElementById("homePaidSplit").textContent = paidSplit;
 
     var card = document.getElementById("homeBalanceCard");
     var fullBalance = computeBalance(all);
@@ -1767,12 +1794,19 @@
       '</div>';
   }
 
+  function payerLine(e) {
+    if (e.paidBy === "Company" && e.authorizedBy) {
+      return "Company (auth: " + e.authorizedBy + ") · " + e.paidVia;
+    }
+    return e.paidBy + " · " + e.paidVia;
+  }
+
   function txnRowHTML(e) {
     return '<button type="button" class="txn-row" data-id="' + e.id + '">' +
       '<span class="txn-icon">' + (CATEGORY_ICON[e.category] || "⋯") + '</span>' +
       '<span class="txn-main">' +
         '<span class="txn-title">' + escapeHTML(e.merchantOrDescription) + '</span><br>' +
-        '<span class="txn-meta">' + e.paidBy + " · " + e.paidVia + '</span>' +
+        '<span class="txn-meta">' + escapeHTML(payerLine(e)) + '</span>' +
       '</span>' +
       '<span class="txn-right">' +
         '<span class="txn-amount">' + formatRupees(e.amountPaise) + '</span><br>' +
@@ -1856,7 +1890,8 @@
       statRow("Total spent", formatRupees(b.total)) +
       statRow("Het paid", formatRupees(b.hetPaid)) +
       statRow("Sarthak paid", formatRupees(b.sarthakPaid)) +
-      statRow("Fair share (each)", formatRupees(b.fairShare));
+      statRow("Fair share (each)", formatRupees(b.fairShare)) +
+      (b.companyPaid > 0 ? statRow("Company paid (not split)", formatRupees(b.companyPaid)) : "");
   }
   function statRow(title, value) {
     return '<div class="row"><div class="rtitle">' + title + '</div><div class="rvalue">' + value + '</div></div>';
@@ -1916,8 +1951,18 @@
       btn.classList.add("selected");
       if (seg.id === "userPicker") setCurrentUser(btn.dataset.user);
       if (seg.id === "periodPicker") { state.period = btn.dataset.period; renderHome(); }
+      if (seg.id === "paidByPicker") updateAuthorizedByVisibility();
     });
   });
+
+  function updateAuthorizedByVisibility() {
+    var field = document.getElementById("authorizedByField");
+    var isCompany = getSegmented("paidByPicker") === "Company";
+    field.style.display = isCompany ? "block" : "none";
+    if (isCompany && !getSegmented("authorizedByPicker")) {
+      setSegmented("authorizedByPicker", currentUser());
+    }
+  }
 
   function isoDateString(d) {
     var m = String(d.getMonth() + 1).padStart(2, "0");
@@ -2018,19 +2063,24 @@
         : (editRecord.amountPaise / 100).toFixed(2);
       setSegmented("paidByPicker", editRecord.paidBy);
       setSegmented("paidViaPicker", editRecord.paidVia);
+      setSegmented("authorizedByPicker", editRecord.authorizedBy || currentUser());
       document.getElementById("categorySelect").value = editRecord.category;
       document.getElementById("descriptionInput").value = editRecord.merchantOrDescription;
       document.getElementById("dateInput").value = editRecord.date.slice(0, 10);
       document.getElementById("notesInput").value = editRecord.notes || "";
     } else {
       amountInput.value = "";
-      setSegmented("paidByPicker", currentUser());
-      setSegmented("paidViaPicker", lsGet("expenseapp.lastMethod") || "Online");
+      // Defaults to Company / Cash — both are one tap away from
+      // Het/Sarthak/Online before saving.
+      setSegmented("paidByPicker", "Company");
+      setSegmented("paidViaPicker", "Cash");
+      setSegmented("authorizedByPicker", currentUser());
       document.getElementById("categorySelect").value = lsGet("expenseapp.lastCategory") || "Food";
       document.getElementById("descriptionInput").value = "";
       document.getElementById("dateInput").value = todayISODate();
       document.getElementById("notesInput").value = "";
     }
+    updateAuthorizedByVisibility();
     if (typeof addSheet.showModal === "function") addSheet.showModal(); else addSheet.setAttribute("open", "");
     setTimeout(function () { amountInput.focus(); }, 50);
   }
@@ -2051,11 +2101,11 @@
     var amountPaise = Math.round(amount * 100);
     var paidBy = getSegmented("paidByPicker");
     var paidVia = getSegmented("paidViaPicker");
+    var authorizedBy = paidBy === "Company" ? getSegmented("authorizedByPicker") : null;
     var category = document.getElementById("categorySelect").value;
     var date = document.getElementById("dateInput").value || todayISODate();
     var notes = document.getElementById("notesInput").value.trim();
 
-    lsSet("expenseapp.lastMethod", paidVia);
     lsSet("expenseapp.lastCategory", category);
 
     var all = loadAll();
@@ -2067,6 +2117,7 @@
         all[idx].amountPaise = amountPaise;
         all[idx].paidBy = paidBy;
         all[idx].paidVia = paidVia;
+        all[idx].authorizedBy = authorizedBy;
         all[idx].category = category;
         all[idx].merchantOrDescription = description;
         all[idx].notes = notes || null;
@@ -2080,6 +2131,7 @@
         currency: "INR",
         paidBy: paidBy,
         paidVia: paidVia,
+        authorizedBy: authorizedBy,
         category: category,
         merchantOrDescription: description,
         notes: notes || null,
@@ -2112,6 +2164,7 @@
       '<div class="card">' +
         statRow("Category", e.category) +
         statRow("Paid by", e.paidBy) +
+        (e.paidBy === "Company" && e.authorizedBy ? statRow("Authorized by", e.authorizedBy) : "") +
         statRow("Paid via", e.paidVia) +
         statRow("Date", formatDateShort(e.date)) +
       '</div>' +
@@ -2237,6 +2290,21 @@
     } catch (e) {}
   }
 
+  /** One-time, idempotent cleanup for anyone who already had data stored
+   *  before the Alcohol/Tobacco -> CSC rename — rewrites it in place so
+   *  the old label never shows up in an already-seeded browser. */
+  function migrateLegacyCategories() {
+    var all = loadAll();
+    var changed = false;
+    all.forEach(function (r) {
+      if (LEGACY_CATEGORY_MAP[r.category]) {
+        r.category = LEGACY_CATEGORY_MAP[r.category];
+        changed = true;
+      }
+    });
+    if (changed) saveAll(all);
+  }
+
   function clearAll() {
     if (!confirm("Erase all expense data stored on this phone's browser? This cannot be undone.")) return;
     lsRemove(STORAGE_KEY);
@@ -2308,6 +2376,7 @@
 
   if (!lsGet(USER_KEY)) setCurrentUser("Het");
   autoSeedIfNeeded();
+  migrateLegacyCategories();
 
   switchTab("home");
 })();

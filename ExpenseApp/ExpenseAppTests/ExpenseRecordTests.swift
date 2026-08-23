@@ -68,4 +68,25 @@ final class ExpenseRecordTests: XCTestCase {
         expense.deletedAt = Date()
         XCTAssertTrue(expense.isDeleted)
     }
+
+    func test_companyExpenseWithPersonAuthorizedBy_isValid() {
+        var expense = record()
+        expense.paidBy = .company
+        expense.authorizedBy = .het
+        XCTAssertNoThrow(try expense.validate())
+    }
+
+    func test_authorizedByCompany_isRejected() {
+        var expense = record()
+        expense.paidBy = .company
+        expense.authorizedBy = .company
+        XCTAssertThrowsError(try expense.validate()) { error in
+            XCTAssertEqual(error as? ExpenseRecordValidationError, .invalidAuthorizedBy)
+        }
+    }
+
+    func test_personalExpenseWithNoAuthorizedBy_isValid() {
+        // authorizedBy is meaningless (and left nil) for a personal expense.
+        XCTAssertNoThrow(try record().validate())
+    }
 }

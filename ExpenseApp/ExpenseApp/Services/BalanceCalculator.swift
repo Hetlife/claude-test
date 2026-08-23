@@ -5,6 +5,9 @@ struct BalanceSummary: Equatable {
     let totalSpentPaise: Int64
     let hetPaidPaise: Int64
     let sarthakPaidPaise: Int64
+    /// Spend paid directly by the Company account. Purely informational —
+    /// it never enters the 50/50 split between Het and Sarthak below.
+    let companyPaidPaise: Int64
     /// `total / 2`, integer paise, floored.
     let fairSharePaise: Int64
     /// Magnitude of the outstanding balance. Zero when settled.
@@ -37,6 +40,9 @@ enum BalanceCalculator {
         let sarthakPaid = active
             .filter { $0.paidBy == .sarthak }
             .reduce(Int64(0)) { $0 + $1.amountPaise }
+        let companyPaid = active
+            .filter { $0.paidBy == .company }
+            .reduce(Int64(0)) { $0 + $1.amountPaise }
         let total = hetPaid + sarthakPaid
         let fairShare = total / 2
 
@@ -65,6 +71,7 @@ enum BalanceCalculator {
             totalSpentPaise: total,
             hetPaidPaise: hetPaid,
             sarthakPaidPaise: sarthakPaid,
+            companyPaidPaise: companyPaid,
             fairSharePaise: fairShare,
             owedAmountPaise: owedAmount,
             owedBy: owedBy,

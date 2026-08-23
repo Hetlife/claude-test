@@ -43,6 +43,9 @@ struct ExpenseDetailView: View {
             Section {
                 LabeledContent("Category", value: current.category.displayName)
                 LabeledContent("Paid by", value: current.paidBy.displayName)
+                if current.paidBy == .company, let authorizedBy = current.authorizedBy {
+                    LabeledContent("Authorized by", value: authorizedBy.displayName)
+                }
                 LabeledContent("Paid via", value: current.paidVia.displayName)
                 LabeledContent("Date", value: Self.dateFormatter.string(from: current.date))
             }

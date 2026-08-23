@@ -49,6 +49,10 @@ struct BalanceView: View {
                         StatRow(title: "Sarthak paid", value: CurrencyFormatter.string(fromPaise: summary.sarthakPaidPaise))
                         Divider().padding(.leading)
                         StatRow(title: "Fair share (each)", value: CurrencyFormatter.string(fromPaise: summary.fairSharePaise))
+                        if summary.companyPaidPaise > 0 {
+                            Divider().padding(.leading)
+                            StatRow(title: "Company paid (not split)", value: CurrencyFormatter.string(fromPaise: summary.companyPaidPaise))
+                        }
                     }
                     .background(Color(.secondarySystemGroupedBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 16))

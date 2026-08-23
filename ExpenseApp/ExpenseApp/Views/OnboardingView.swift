@@ -33,7 +33,7 @@ struct OnboardingView: View {
                     .foregroundStyle(.secondary)
 
                 Picker("Your name", selection: $selection) {
-                    ForEach(Payer.allCases) { payer in
+                    ForEach(Payer.people) { payer in
                         Text(payer.displayName).tag(payer)
                     }
                 }

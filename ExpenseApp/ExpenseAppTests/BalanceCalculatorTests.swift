@@ -115,4 +115,34 @@ final class BalanceCalculatorTests: XCTestCase {
         XCTAssertTrue(summary.isSettled)
         XCTAssertEqual(summary.totalSpentPaise, 100_000_000_00)
     }
+
+    func test_companyPaidExpense_excludedFromFiftyFiftySplit() {
+        let records = [
+            record(amountPaise: 1000_00, paidBy: .het),
+            record(amountPaise: 1000_00, paidBy: .sarthak),
+            record(amountPaise: 9999_00, paidBy: .company)
+        ]
+        let summary = BalanceCalculator.summary(for: records)
+
+        // The company amount must not affect who owes whom, or the total.
+        XCTAssertTrue(summary.isSettled)
+        XCTAssertEqual(summary.totalSpentPaise, 2000_00)
+        XCTAssertEqual(summary.companyPaidPaise, 9999_00)
+    }
+
+    func test_onlyCompanyExpenses_settledWithZeroPersonalTotal() {
+        let records = [record(amountPaise: 5000_00, paidBy: .company)]
+        let summary = BalanceCalculator.summary(for: records)
+
+        XCTAssertTrue(summary.isSettled)
+        XCTAssertEqual(summary.totalSpentPaise, 0)
+        XCTAssertEqual(summary.companyPaidPaise, 5000_00)
+    }
+
+    func test_deletedCompanyExpense_excludedFromCompanyTotal() {
+        let records = [record(amountPaise: 5000_00, paidBy: .company, deleted: true)]
+        let summary = BalanceCalculator.summary(for: records)
+
+        XCTAssertEqual(summary.companyPaidPaise, 0)
+    }
 }

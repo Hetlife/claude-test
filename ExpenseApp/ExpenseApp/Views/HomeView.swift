@@ -55,9 +55,14 @@ struct HomeView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
-                    HStack(spacing: 20) {
-                        Text("Het paid \(CurrencyFormatter.string(fromPaise: summary.hetPaidPaise))")
-                        Text("Sarthak paid \(CurrencyFormatter.string(fromPaise: summary.sarthakPaidPaise))")
+                    VStack(spacing: 2) {
+                        HStack(spacing: 20) {
+                            Text("Het paid \(CurrencyFormatter.string(fromPaise: summary.hetPaidPaise))")
+                            Text("Sarthak paid \(CurrencyFormatter.string(fromPaise: summary.sarthakPaidPaise))")
+                        }
+                        if summary.companyPaidPaise > 0 {
+                            Text("Company paid \(CurrencyFormatter.string(fromPaise: summary.companyPaidPaise))")
+                        }
                     }
                     .font(.footnote)
                     .foregroundStyle(.secondary)

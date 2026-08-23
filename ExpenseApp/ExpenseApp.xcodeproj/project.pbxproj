@@ -481,6 +481,16 @@
 			isa = PBXBuildFile;
 			fileRef = 32C72FF51775D45090D74A16;
 		};
+		FC7CAA2EC5BEDDD0A104BC98 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.swift;
+			path = ExpenseCategoryTests.swift;
+			sourceTree = "<group>";
+		};
+		60F20E187A4E5D420D66893E = {
+			isa = PBXBuildFile;
+			fileRef = FC7CAA2EC5BEDDD0A104BC98;
+		};
 		33135DA5B8E26E589427ECF3 = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
@@ -609,6 +619,7 @@
 				E74AABC4E675731EF9D3A0CD,
 				89701C748215DDFF1C18BCC8,
 				32C72FF51775D45090D74A16,
+				FC7CAA2EC5BEDDD0A104BC98,
 			);
 			sourceTree = "<group>";
 			path = ExpenseAppTests;
@@ -703,6 +714,7 @@
 				37F7A32BE525A64EED3D2CBF,
 				37977E45DBE2C83F61C73666,
 				3D13E4187D2D55358BD895A6,
+				60F20E187A4E5D420D66893E,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

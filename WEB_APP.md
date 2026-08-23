@@ -61,13 +61,37 @@ bar. There's one active budget at a time; editing it replaces the current
 one, and "Remove Budget" clears it. It counts every active expense whose
 date falls in that range, from both of you combined (not per-person).
 
+## Company account
+
+There's a third "paid by" option alongside Het and Sarthak: **Company** —
+for business expenses paid directly by the company, not personally by
+either of you. Pick it and an **Authorized By** field appears (Het or
+Sarthak), since a company expense always needs someone accountable for
+it. Company spend is tracked and shown (Home, Balance, filters) but is
+**never split 50/50** — it's excluded from "who paid more"/fair share
+entirely, since neither of you personally fronted that money.
+
+Defaults for a new expense are **Company / Cash** (the common case) —
+both are one tap away from Het/Sarthak/Online before you save.
+
+## Discreet category label (CSC)
+
+What used to be separate "Alcohol" and "Tobacco" categories are now one
+merged category labeled **CSC**, with a neutral box icon — nothing in the
+category list spells out what was actually bought. If you already had
+expenses categorized the old way, they were relabeled to CSC
+automatically the next time you opened the app.
+
 ## Loading your real Jaipur + SCS data
 
-**Settings → Load Sample Data (Jaipur + SCS)** in the web app loads the
-same 70 verified transactions described in `SampleData/SEED_DATA.md` —
-same caveat applies: since this app has one flat ledger (no per-trip
-grouping), the Balance tab will show the *combined* number (Het owes
-Sarthak ₹9,076), not the two separate trip settlements from your source
+The app now **pre-loads** the same 70 verified transactions described in
+`SampleData/SEED_DATA.md` automatically the first time it's opened in a
+new browser (Sarthak's phone, a private tab, etc.) — no tap needed. You
+can also load it manually any time via **Settings → Load Sample Data
+(Jaipur + SCS)**, which is safe to tap more than once (never duplicates).
+Same caveat applies: since this app has one flat ledger (no per-trip
+grouping), the Balance tab shows the *combined* number (Het owes Sarthak
+₹9,076), not the two separate trip settlements from your source
 accounting document.
 
 ## Hosting it yourself elsewhere (optional)

@@ -128,6 +128,9 @@ struct TransactionsView: View {
                 FilterChip(title: "Sarthak", isSelected: payerFilter == .sarthak) {
                     payerFilter = (payerFilter == .sarthak) ? nil : .sarthak
                 }
+                FilterChip(title: "Company", isSelected: payerFilter == .company) {
+                    payerFilter = (payerFilter == .company) ? nil : .company
+                }
                 FilterChip(title: "Cash", isSelected: methodFilter == .cash) {
                     methodFilter = (methodFilter == .cash) ? nil : .cash
                 }

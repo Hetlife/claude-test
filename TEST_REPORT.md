@@ -73,6 +73,15 @@ substitute for an actual build.**
   expenses excluded, empty ledger, and a single-day budget window.
 - **`BudgetTests.swift`** — validation: zero amount rejected, end date
   before start date rejected, same-day start/end accepted.
+- **`ExpenseCategoryTests.swift`** — legacy "Alcohol"/"Tobacco" raw values
+  decode as the new discreet **CSC** category, unknown values fall back to
+  Other, CSC round-trips through encode/decode as "CSC" (never the old
+  labels).
+- **`BalanceCalculatorTests`** additions — a Company-paid expense is
+  tracked in `companyPaidPaise` but excluded entirely from the 50/50
+  split (total, fair share, who-owes-whom all unaffected by it).
+- **`ExpenseRecordTests`** additions — a company expense with a person
+  `authorizedBy` validates; `authorizedBy == .company` is rejected.
 
 - **`BalanceCalculatorTests.swift`** — every scenario from the product
   spec: Het pays ₹1,000 → Sarthak owes ₹500; Sarthak pays ₹1,000 → Het

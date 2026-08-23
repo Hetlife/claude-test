@@ -27,7 +27,7 @@ struct TransactionRowView: View {
                     .font(.body)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
-                Text("\(expense.paidBy.displayName) · \(expense.paidVia.displayName)")
+                Text(payerLine)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -49,9 +49,16 @@ struct TransactionRowView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "\(expense.merchantOrDescription), \(expense.category.displayName), "
-            + "paid by \(expense.paidBy.displayName), \(expense.paidVia.displayName), "
+            + "paid by \(payerLine), "
             + "\(CurrencyFormatter.accessibleString(fromPaise: expense.amountPaise)), "
             + Self.dateFormatter.string(from: expense.date)
         )
+    }
+
+    private var payerLine: String {
+        if expense.paidBy == .company, let authorizedBy = expense.authorizedBy {
+            return "Company (auth: \(authorizedBy.displayName)) · \(expense.paidVia.displayName)"
+        }
+        return "\(expense.paidBy.displayName) · \(expense.paidVia.displayName)"
     }
 }

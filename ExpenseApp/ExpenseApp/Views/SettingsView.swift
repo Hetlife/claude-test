@@ -23,7 +23,7 @@ struct SettingsView: View {
         Form {
             Section("Personal") {
                 Picker("Your name", selection: $currentUserRaw) {
-                    ForEach(Payer.allCases) { payer in
+                    ForEach(Payer.people) { payer in
                         Text(payer.displayName).tag(payer.rawValue)
                     }
                 }
