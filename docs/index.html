@@ -2221,6 +2221,22 @@
     }
   }
 
+  /** Pre-loads the Jaipur + SCS sample data on this browser's very first
+   *  open only — tracked by SEEDED_KEY so it never runs again, and it
+   *  never overwrites data that's already here (a real expense, or sample
+   *  data someone already loaded manually). */
+  var SEEDED_KEY = "expenseapp.seeded.v1";
+  function autoSeedIfNeeded() {
+    if (lsGet(SEEDED_KEY)) return;
+    lsSet(SEEDED_KEY, "1");
+    if (loadAll().length > 0) return;
+    try {
+      var raw = document.getElementById("sampleDataJson").textContent;
+      var data = JSON.parse(raw);
+      saveAll(data.expenses || []);
+    } catch (e) {}
+  }
+
   function clearAll() {
     if (!confirm("Erase all expense data stored on this phone's browser? This cannot be undone.")) return;
     lsRemove(STORAGE_KEY);
@@ -2291,6 +2307,7 @@
   budgetSheet.addEventListener("click", function (ev) { if (ev.target === budgetSheet) closeBudgetEditor(); });
 
   if (!lsGet(USER_KEY)) setCurrentUser("Het");
+  autoSeedIfNeeded();
 
   switchTab("home");
 })();
