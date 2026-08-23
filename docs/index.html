@@ -237,12 +237,7 @@
       <button data-period="month" class="selected" type="button">This Month</button>
       <button data-period="all" type="button">All Time</button>
     </div>
-    <div class="card center">
-      <div class="big-amount" id="homeTotal">₹0</div>
-      <div class="sub">Total spent</div>
-      <div class="sub" id="homePaidSplit" style="margin-top:8px;"></div>
-    </div>
-    <div class="card" id="homeBudgetCard"></div>
+    <div class="card center" id="homeHeroCard"></div>
     <div class="card center" id="homeBalanceCard"></div>
     <div style="display:flex; align-items:center; justify-content:space-between; margin: 4px 4px 8px;">
       <div style="font-weight:800;">Recent</div>
@@ -1725,16 +1720,12 @@
       });
     }
     var b = computeBalance(periodList);
-    document.getElementById("homeTotal").textContent = formatRupees(b.total);
-    var paidSplit = "Het paid " + formatRupees(b.hetPaid) + "   ·   Sarthak paid " + formatRupees(b.sarthakPaid);
-    if (b.companyPaid > 0) paidSplit += "   ·   Company paid " + formatRupees(b.companyPaid);
-    document.getElementById("homePaidSplit").textContent = paidSplit;
 
     var card = document.getElementById("homeBalanceCard");
     var fullBalance = computeBalance(all);
     card.innerHTML = balanceCardHTML(fullBalance);
 
-    renderBudgetCard();
+    renderHeroCard(b);
 
     var recentWrap = document.getElementById("homeRecentList");
     var recent = all.slice().sort(function (a, b2) { return new Date(b2.date) - new Date(a.date); }).slice(0, 5);
@@ -1760,38 +1751,45 @@
       '<div class="es-title">' + title + '</div><div>' + msg + '</div></div>';
   }
 
-  function renderBudgetCard() {
-    var el = document.getElementById("homeBudgetCard");
+  /** The Home hero — the first number you see when the app opens. Shows
+   *  budget remaining (with the total budget as a small caption) when a
+   *  budget is set; falls back to total spent otherwise. Always shows who
+   *  paid what, and a link to set/edit the budget. */
+  function renderHeroCard(periodBalance) {
+    var el = document.getElementById("homeHeroCard");
     if (!el) return;
+
+    var paidSplit = "Het paid " + formatRupees(periodBalance.hetPaid) + "   ·   Sarthak paid " + formatRupees(periodBalance.sarthakPaid);
+    if (periodBalance.companyPaid > 0) paidSplit += "   ·   Company paid " + formatRupees(periodBalance.companyPaid);
+    var paidSplitHTML = '<div class="sub" style="margin-top:6px; font-size:13px;">' + paidSplit + '</div>';
+
     var budget = loadBudget();
     if (!budget) {
       el.innerHTML =
-        '<div style="display:flex; align-items:center; justify-content:space-between;">' +
-          '<div class="sub">No budget set</div>' +
-          '<button type="button" class="btn-secondary" style="width:auto; margin:0; padding:6px 14px; font-size:13px;" data-action="open-budget-editor">Set Budget</button>' +
-        '</div>';
+        '<div class="big-amount">' + formatRupees(periodBalance.total) + '</div>' +
+        '<div class="sub">Total spent</div>' +
+        paidSplitHTML +
+        '<button type="button" data-action="open-budget-editor" style="background:none; border:none; color:var(--accent); font-size:13px; font-weight:700; cursor:pointer; padding:0; margin-top:10px;">Set Budget</button>';
       return;
     }
+
     var progress = computeBudgetProgress(budget, activeExpenses());
     var pct = budget.amountPaise > 0 ? Math.min(100, Math.max(0, (progress.spent / budget.amountPaise) * 100)) : 0;
     var barColor = progress.over ? "var(--bad)" : "var(--accent)";
     var remainingColor = progress.over ? "var(--bad)" : "var(--good)";
     var label = (budget.name ? escapeHTML(budget.name) + " · " : "") + formatDateShort(budget.startDate) + " – " + formatDateShort(budget.endDate);
+    var caption = progress.over
+      ? "over budget"
+      : "left of " + formatRupees(budget.amountPaise) + " budget";
     el.innerHTML =
-      '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">' +
-        '<div class="label-sm">' + label + '</div>' +
-        '<button type="button" data-action="open-budget-editor" style="background:none; border:none; color:var(--accent); font-size:13px; font-weight:700; cursor:pointer; padding:0;">Edit</button>' +
-      '</div>' +
-      '<div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px;">' +
-        '<div>' +
-          '<div class="big-amount" style="font-size:28px; color:' + remainingColor + ';">' + formatRupees(Math.abs(progress.remaining)) + '</div>' +
-          '<div class="sub">' + (progress.over ? "over budget" : "left") + '</div>' +
-        '</div>' +
-        '<div class="sub" style="text-align:right;">Spent<br><b style="color:var(--ink);">' + formatRupees(progress.spent) + '</b></div>' +
-      '</div>' +
+      '<div class="label-sm">' + label + '</div>' +
+      '<div class="big-amount" style="color:' + remainingColor + '; margin-top:4px;">' + formatRupees(Math.abs(progress.remaining)) + '</div>' +
+      '<div class="sub">' + caption + '</div>' +
       '<div style="height:6px; background:var(--surface-2); border-radius:999px; margin-top:12px; overflow:hidden;">' +
         '<div style="height:100%; width:' + pct + '%; background:' + barColor + ';"></div>' +
-      '</div>';
+      '</div>' +
+      paidSplitHTML +
+      '<button type="button" data-action="open-budget-editor" style="background:none; border:none; color:var(--accent); font-size:13px; font-weight:700; cursor:pointer; padding:0; margin-top:10px;">Edit Budget</button>';
   }
 
   function payerLine(e) {

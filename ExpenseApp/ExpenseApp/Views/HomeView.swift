@@ -47,31 +47,10 @@ struct HomeView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
 
-                VStack(spacing: 4) {
-                    Text(CurrencyFormatter.string(fromPaise: summary.totalSpentPaise))
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .accessibilityLabel("Total spent \(CurrencyFormatter.accessibleString(fromPaise: summary.totalSpentPaise))")
-                    Text("Total spent")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    VStack(spacing: 2) {
-                        HStack(spacing: 20) {
-                            Text("Het paid \(CurrencyFormatter.string(fromPaise: summary.hetPaidPaise))")
-                            Text("Sarthak paid \(CurrencyFormatter.string(fromPaise: summary.sarthakPaidPaise))")
-                        }
-                        if summary.companyPaidPaise > 0 {
-                            Text("Company paid \(CurrencyFormatter.string(fromPaise: summary.companyPaidPaise))")
-                        }
-                    }
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 2)
-                }
-
                 BudgetCardView(
                     budget: budgetStore.budget,
                     progress: budgetStore.budget.map { BudgetCalculator.progress(for: $0, records: store.activeExpenses) },
+                    summary: summary,
                     onTap: { isPresentingBudgetEditor = true }
                 )
                 .padding(.horizontal)
