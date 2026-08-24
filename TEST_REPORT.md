@@ -199,9 +199,23 @@ verbatim from the shipped file and executed.
   screen reader.
 - **Performance** at scale (thousands of expenses) was not profiled.
 
+## Continuous integration (real compiler, finally)
+
+`.github/workflows/ios-build-test.yml` runs on every push/PR that touches
+`ExpenseApp/`: it builds `ExpenseApp.xcodeproj` with a real Xcode toolchain
+on a GitHub-hosted macOS runner, then runs the full `ExpenseAppTests`
+suite on an iOS Simulator. This closes the biggest gap described above —
+for the first time, the project is verified by an actual Swift compiler
+and an actual XCTest run, not just by manual static review. Check the
+"Actions" tab on GitHub for results after each push. It builds/tests on
+the Simulator only (no code signing, no physical device, no App Store
+credentials needed) — installing on a real iPhone still requires Xcode on
+macOS or a cloud Mac rental, per `BUILD_AND_INSTALL.md`.
+
 ## Recommended next step
 
 Open the project in Xcode (`BUILD_AND_INSTALL.md`), run `Product → Build`
 then `Product → Test`, and report back anything that doesn't compile or
 any test that fails — given the size of this codebase, that feedback loop
-should be fast to close.
+should be fast to close. Or just check the GitHub Actions tab, which now
+does this automatically on every push.

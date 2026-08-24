@@ -1,0 +1,66 @@
+name: iOS Build & Test
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "ExpenseApp/**"
+      - ".github/workflows/ios-build-test.yml"
+  pull_request:
+    paths:
+      - "ExpenseApp/**"
+      - ".github/workflows/ios-build-test.yml"
+  workflow_dispatch: {}
+
+jobs:
+  build-and-test:
+    name: Build + Test (Xcode, iOS Simulator)
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: ExpenseApp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Resolve a simulator destination
+        id: destination
+        run: |
+          LIST=$(xcrun simctl list devices available)
+          NAME=""
+          for CANDIDATE in "iPhone 16" "iPhone 15" "iPhone 14"; do
+            if echo "$LIST" | grep -qF "$CANDIDATE ("; then
+              NAME="$CANDIDATE"
+              break
+            fi
+          done
+          if [ -z "$NAME" ]; then
+            NAME=$(echo "$LIST" | grep -oE '^ *iPhone [A-Za-z0-9 ]+\(' | sed -E 's/^ *//; s/ \($//' | head -n 1)
+          fi
+          if [ -z "$NAME" ]; then
+            echo "No available iOS Simulator found on this runner." >&2
+            echo "$LIST"
+            exit 1
+          fi
+          echo "Using simulator: $NAME"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Build (Debug, iOS Simulator)
+        run: |
+          xcodebuild build \
+            -project ExpenseApp.xcodeproj \
+            -scheme ExpenseApp \
+            -destination "platform=iOS Simulator,name=${{ steps.destination.outputs.name }}" \
+            -configuration Debug
+
+      - name: Test (ExpenseAppTests)
+        run: |
+          xcodebuild test \
+            -project ExpenseApp.xcodeproj \
+            -scheme ExpenseApp \
+            -destination "platform=iOS Simulator,name=${{ steps.destination.outputs.name }}" \
+            -configuration Debug
