@@ -53,13 +53,16 @@ import feature works on the native iOS app.
 
 ## Budget
 
-**Settings → Set a Budget** (or the card right on the Home screen) lets
+**Settings → Set a Budget** (or the card right at the top of Home) lets
 you set an amount and a specific date range — e.g. "₹10,000, this month"
-or "₹5,000, June 1–15 for a trip." The Home screen shows how much of it
-is left (or how far over) every time you open the app, with a progress
-bar. There's one active budget at a time; editing it replaces the current
-one, and "Remove Budget" clears it. It counts every active expense whose
-date falls in that range, from both of you combined (not per-person).
+or "₹5,000, June 1–15 for a trip." That top-of-Home card *is* the
+headline number: with a budget set it shows what's left (or how far
+over), with "of ₹Y budget" as a small caption and a progress bar; with no
+budget set it falls back to showing total spent instead — either way, the
+big "Add Expense" button stays right below it. There's one active budget
+at a time; editing it replaces the current one, and "Remove Budget"
+clears it. It counts every active expense (including Company) whose date
+falls in that range.
 
 ## Company account
 

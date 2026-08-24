@@ -25,12 +25,13 @@ localized to one file.
 
 ## What "static validation" means here, concretely
 
-In place of a compiler, the following was done for every one of the 39
-Swift source/test files:
+In place of a compiler, the following was done for every one of the 47
+Swift source/test files (re-run after every later addition — Budget,
+Company/authorizedBy, CSC — not just once at the start):
 
 1. **Structural balance check** — a script verified every file has
    balanced `{}`, `()`, `[]`, correctly skipping string/character literals
-   and comments. All 39 files passed.
+   and comments. All 47 files pass.
 2. **Manual protocol-conformance audit** — every `enum`/`struct`
    declaration was checked against every place it's compared with `==`,
    used as a `Picker`/`ForEach` selection, or passed to `XCTAssertEqual`,
@@ -45,7 +46,13 @@ Swift source/test files:
    script (not hand-typed) specifically to avoid transcription errors; a
    second script independently verified every UUID referenced anywhere in
    the object graph resolves to a real object, and vice versa (0 dangling
-   references, 0 unreferenced objects, across 114 objects).
+   references, 0 unreferenced objects, across 130 objects). Re-running the
+   generator against the current file tree reproduces the committed
+   `project.pbxproj` byte-for-byte.
+5. **Exhaustiveness/construction-site sweep** — every `switch`/`case`
+   over `Payer` and every `ExpenseRecord(...)`/`BudgetCardView(...)` call
+   site was checked against the current type shape after `Payer.company`
+   and `authorizedBy` were added. Full detail in `BUILD_PLAN.md` §6.
 
 ## Bugs found and fixed during static review
 
@@ -66,8 +73,15 @@ substitute for an actual build.**
 
 ## Unit test coverage (written, logic-verified, not yet run by XCTest)
 
-`ExpenseAppTests/` — 9 files, ~60 test methods:
+`ExpenseAppTests/` — 10 files, ~65 test methods:
 
+- **`BalanceCalculatorTests.swift`** — every scenario from the product
+  spec: Het pays ₹1,000 → Sarthak owes ₹500; Sarthak pays ₹1,000 → Het
+  owes ₹500; equal payments → settled; mixed transactions; odd totals down
+  to single-paise precision; deleted expenses excluded; empty ledger;
+  large amounts (no overflow at ₹10 lakh+ scale). Plus: a Company-paid
+  expense is tracked in `companyPaidPaise` but excluded entirely from the
+  50/50 split (total, fair share, who-owes-whom all unaffected by it).
 - **`BudgetCalculatorTests.swift`** — spend inside/outside a budget's date
   range, inclusive start/end boundaries, over-budget flagging, deleted
   expenses excluded, empty ledger, and a single-day budget window.
@@ -77,17 +91,6 @@ substitute for an actual build.**
   decode as the new discreet **CSC** category, unknown values fall back to
   Other, CSC round-trips through encode/decode as "CSC" (never the old
   labels).
-- **`BalanceCalculatorTests`** additions — a Company-paid expense is
-  tracked in `companyPaidPaise` but excluded entirely from the 50/50
-  split (total, fair share, who-owes-whom all unaffected by it).
-- **`ExpenseRecordTests`** additions — a company expense with a person
-  `authorizedBy` validates; `authorizedBy == .company` is rejected.
-
-- **`BalanceCalculatorTests.swift`** — every scenario from the product
-  spec: Het pays ₹1,000 → Sarthak owes ₹500; Sarthak pays ₹1,000 → Het
-  owes ₹500; equal payments → settled; mixed transactions; odd totals down
-  to single-paise precision; deleted expenses excluded; empty ledger;
-  large amounts (no overflow at ₹10 lakh+ scale).
 - **`SyncEngineTests.swift`** — the pure merge algorithm covering the
   spec's full sync test matrix that doesn't require physical hardware: new
   remote record added, union of independent offline edits, same-UUID
@@ -112,7 +115,9 @@ substitute for an actual build.**
   newest-first sort ordering.
 - **`ExpenseRecordTests.swift`** — validation rules: zero/negative/
   oversized amounts rejected, boundary amount accepted, empty description
-  rejected, non-INR currency rejected, non-finite date rejected.
+  rejected, non-INR currency rejected, non-finite date rejected. Plus: a
+  company expense with a person `authorizedBy` validates;
+  `authorizedBy == .company` is rejected.
 - **`CurrencyFormatterTests.swift`** — whole-rupee amounts show no
   decimals, fractional amounts show exactly two, zero handled, VoiceOver
   string always shows two decimals.
@@ -141,6 +146,35 @@ re-derived in Python for this check) is correct. See
 `SampleData/SEED_DATA.md` for the important caveat that the app's v1 flat
 ledger shows this combined number, not the two separate trip settlements
 the source document also computes.
+
+## Web app (docs/index.html + the live artifact)
+
+Unlike the native app, this one actually runs in this environment (a
+browser engine isn't required — Node is available), so it gets a stronger
+guarantee than "logic-verified": its pure functions were extracted
+verbatim from the shipped file and executed.
+
+- **Syntax**: `node --check` on the extracted `<script>` — passes.
+- **Structural**: HTML tag balance (`div`/`section`/`button`/`dialog`),
+  CSS brace balance — all balanced.
+- **Dead-reference sweep**: every `document.getElementById("…")` and
+  `querySelector("#…")` call cross-checked against actual `id="…"`
+  attributes in the HTML — 0 dangling references. Every `data-action="…"`
+  in the HTML has a matching case in the JS click dispatcher and vice
+  versa — 0 orphans either way.
+- **Executed logic tests** (Node, not just read) — 25 cases mirroring the
+  Swift suite: `computeBalance` (Het/Sarthak split, settled, odd-paise
+  rounding, deleted exclusion, Company exclusion from the split, Company
+  tracked separately), `computeBudgetProgress` (in/out of range, inclusive
+  boundaries, over-budget, deleted exclusion), `mergeRecords`/
+  `isValidRecord` (new record, union, latest-wins, stale-ignored,
+  tie-keeps-local, tombstone propagation, idempotent re-sync, invalid
+  rejected, legacy Alcohol/Tobacco→CSC normalization, Company-authorized-
+  by-Company rejected, missing `authorizedBy` tolerated). All 25 pass.
+- **Real data**: the embedded 70-record Jaipur+SCS dataset run through the
+  extracted `computeBalance` reproduces the exact expected ₹9,076 figure.
+- `docs/index.html` was diffed against the last-published live artifact —
+  byte-identical, so what's on GitHub and what's live are the same code.
 
 ## Explicitly NOT tested (no hardware/toolchain available)
 

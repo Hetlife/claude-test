@@ -16,6 +16,12 @@ phone-to-phone sync over the local network.
   grouping.
 - An optional budget — an amount over a date range you set — with the
   remaining balance shown right on the Home screen when the app opens.
+- A third account, **Company**, for business expenses paid directly by the
+  company rather than personally — always paired with who authorized it
+  (Het or Sarthak), and always excluded from the personal 50/50 split.
+- A deliberately discreet category label, **CSC**, covering what used to
+  be separate Alcohol/Tobacco categories — no label or icon that spells
+  out what was bought.
 - Direct, manual, foreground device-to-device sync over Wi-Fi using Apple's
   MultipeerConnectivity — no server, ever.
 - JSON export/import as a manual backup mechanism.
@@ -23,6 +29,10 @@ phone-to-phone sync over the local network.
 Architecture and trade-offs are documented in `BUILD_PLAN.md`.
 
 ## Web version (Chrome, right now, no install)
+
+**Live, already deployed:** https://claude.ai/code/artifact/d02a5342-a220-4985-b011-bf7f978ff5a1
+Open it on your iPhone → Share → Add to Home Screen. Pre-loaded with the
+Jaipur + SCS sample data on first open.
 
 There's also a browser-only build of the same app (`docs/index.html`) —
 same design, same 50/50 balance math, same JSON export/import schema —
@@ -59,6 +69,8 @@ SampleData/
                                ready to import via Settings → Import
   SEED_DATA.md                What it is, and an important caveat about
                                combined vs. per-trip balances
+  DONNA_EXPENSE_MANAGER_PROMPT.txt   Paste into any AI to convert future
+                               trips' raw notes into an import-ready JSON
 BUILD_PLAN.md                 Architecture, milestones, environment notes
 BUILD_AND_INSTALL.md          Step-by-step: build in Xcode, install on two
                                free-provisioned iPhones
